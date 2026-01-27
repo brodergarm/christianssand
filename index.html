@@ -109,20 +109,46 @@
 
 <div class="container">
     <div class="category-grid">
-        <div class="category-card" onclick="setMode('studio')">
-            <img src="static/ror.png" alt="Rør"><div class="category-info">Studio-Rør</div>
-        </div>
-        <div class="category-card" onclick="setMode('gave')">
-            <img src="static/eske.png" alt="Eske"><div class="category-info">Gaveeske</div>
-        </div>
-        <div class="category-card" onclick="setMode('abc')">
-            <img src="static/abc.png" alt="Sett"><div class="category-info">Bokstavsett</div>
-        </div>
-        <div class="category-card" onclick="setMode('figurer')">
-            <img src="static/figurer.png" alt="Figurer"><div class="category-info">Figurer</div>
+    <div class="category-card" onclick="setMode('studio')">
+        <img src="static/ror.png" alt="Rør">
+        <div class="category-info">
+            <h3>Studio-Rør</h3>
+            <p style="font-size: 0.7rem; color: #777; text-transform: none; font-style: italic; margin-top: 5px; font-weight: normal; letter-spacing: 0.05em;">
+                Vår klassiske innpakning. Resirkulerbare rør som beskytter stiftene perfekt.
+            </p>
         </div>
     </div>
 
+    <div class="category-card" onclick="setMode('gave')">
+        <img src="static/eske.png" alt="Eske">
+        <div class="category-info">
+            <h3>Gaveeske</h3>
+            <p style="font-size: 0.7rem; color: #777; text-transform: none; font-style: italic; margin-top: 5px; font-weight: normal; letter-spacing: 0.05em;">
+                Eksklusiv eske med silkepapir. Den ideelle gaven til dåp og navnefest.
+            </p>
+        </div>
+    </div>
+
+    <div class="category-card" onclick="setMode('abc')">
+        <img src="static/abc.png" alt="Sett">
+        <div class="category-info">
+            <h3>Bokstavsett</h3>
+            <p style="font-size: 0.7rem; color: #777; text-transform: none; font-style: italic; margin-top: 5px; font-weight: normal; letter-spacing: 0.05em;">
+                Komplette sett med alfabetet eller tall. Perfekt for læring og lek.
+            </p>
+        </div>
+    </div>
+
+    <div class="category-card" onclick="setMode('figurer')">
+        <img src="static/figurer.png" alt="Figurer">
+        <div class="category-info">
+            <h3>Figurer</h3>
+            <p style="font-size: 0.7rem; color: #777; text-transform: none; font-style: italic; margin-top: 5px; font-weight: normal; letter-spacing: 0.05em;">
+                Håndstøpte dyr, biler og hjerter. Like morsomme å se på som å tegne med.
+            </p>
+        </div>
+    </div>
+</div>
     <div id="konfigurator" class="config-container">
         <div class="config-layout">
             <div>
@@ -284,3 +310,4 @@
 
 </body>
 </html>
+
