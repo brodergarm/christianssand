@@ -1,0 +1,230 @@
+HTML_TEMPLATE = r'''
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christianssand | Håndlagde fargestifter</title>
+    <style>
+        :root { 
+            --forest-black: #141a17;
+            --emerald-deep: #1e332d;
+            --clay-warm: #a67c52;
+            --linen: #f4f1ed;
+            --vipps: #ff5b24;
+            --klarna: #ffb3c7;
+            --border-color: rgba(30, 51, 45, 0.2);
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(rgba(244, 241, 237, 0.92), rgba(244, 241, 237, 0.85)),
+                        url('/static/christianssand_bg_new.jpg');
+            background-size: cover; background-attachment: fixed;
+            color: var(--forest-black); margin: 0; padding: 0; min-height: 100vh;
+        }
+
+        /* HEADER */
+        .top-bar {
+            padding: 1.5rem 4rem;
+            background: white;
+            display: flex; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header-content { display: flex; align-items: center; gap: 2rem; }
+        .header-title { font-size: 1.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--emerald-deep); margin: 0; }
+        .header-subtitle { font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clay-warm); margin-top: 0.3rem; }
+        .main-logo { height: 80px; width: auto; }
+
+        /* FLYTENDE HANDLEKURV */
+        #floating-cart {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 350px; background: white;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            border-top: 5px solid var(--emerald-deep);
+            padding: 20px; z-index: 1000;
+            display: none; /* Skjult til varer legges til */
+            border-radius: 4px;
+        }
+
+        .cart-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+        .checkout-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+
+        .btn-vipps { background: var(--vipps); color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 0.8rem; }
+        .btn-klarna { background: var(--klarna); color: black; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 0.8rem; }
+
+        /* GRID & CONFIG */
+        .container { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 5rem; }
+        .category-card { background: white; cursor: pointer; transition: 0.4s; border: 1px solid transparent; text-align: center; }
+        .category-card:hover { transform: translateY(-5px); border-color: var(--clay-warm); }
+        .category-card img { width: 100%; height: 220px; object-fit: cover; }
+        .category-info { padding: 1rem; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.1em; }
+
+        .config-container { background: white; padding: 4rem; box-shadow: 0 30px 60px rgba(0,0,0,0.05); border-top: 4px solid var(--emerald-deep); }
+        .config-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; }
+
+        input, select { width: 100%; padding: 12px 0; border: none; border-bottom: 1px solid #ddd; font-size: 1.1rem; font-family: 'Georgia', serif; background: transparent; }
+        label { display: block; margin-top: 2rem; font-size: 0.75rem; text-transform: uppercase; color: var(--clay-warm); font-weight: bold; }
+
+        .preview-box { background: #fafaf9; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 250px; border: 1px solid #f0efed; transition: 0.3s; }
+        .preview-box.box-mode { border: 10px solid #d4c4b5; background: white; }
+
+        .letter { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
+
+        .buy-btn { background: var(--emerald-deep); color: white; border: none; padding: 1.5rem; width: 100%; text-transform: uppercase; cursor: pointer; margin-top: 2rem; letter-spacing: 0.2em; }
+        .buy-btn:disabled { background: #eee; cursor: not-allowed; }
+
+        @media (max-width: 850px) { .config-layout { grid-template-columns: 1fr; } #floating-cart { width: 90%; right: 5%; bottom: 10px; } }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="header-content">
+        <img src="{{ url_for('static', filename='logo_olav.jpg') }}" alt="Logo" class="main-logo">
+        <div class="header-text-group">
+            <h1 class="header-title">Christianssand</h1>
+            <span class="header-subtitle">Håndlagde fargestifter</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="category-grid">
+        <div class="category-card" onclick="setMode('studio')">
+            <img src="/static/ror.png" alt="Rør"><div class="category-info">Studio-Rør</div>
+        </div>
+        <div class="category-card" onclick="setMode('gave')">
+            <img src="/static/eske.png" alt="Eske"><div class="category-info">Gaveeske</div>
+        </div>
+        <div class="category-card" onclick="setMode('abc')">
+            <img src="/static/abc.png" alt="Sett"><div class="category-info">Bokstavsett</div>
+        </div>
+        <div class="category-card" onclick="setMode('figurer')">
+            <img src="/static/figurer.png" alt="Figurer"><div class="category-info">Figurer</div>
+        </div>
+    </div>
+
+    <div id="konfigurator" class="config-container">
+        <div class="config-layout">
+            <div>
+                <h2 id="config-title">Konfigurator</h2>
+                <label>Navn eller ord</label>
+                <input type="text" id="nameInput" placeholder="SKRIV HER..." oninput="updateUI()" maxlength="12">
+
+                <label>Innpakning</label>
+                <select id="pkgSelect" onchange="updateUI()">
+                    <option value="studio">Studio-rør (95,- pr bokstav)</option>
+                    <option value="gave">Eksklusiv Gaveeske (+89,-)</option>
+                </select>
+
+                <div style="font-size: 2.5rem; margin: 2rem 0;" id="totalPrice">0 kr</div>
+                <button id="buyBtn" class="buy-btn" onclick="addToCart()" disabled>Legg i handlekurv</button>
+            </div>
+            <div class="preview-box" id="preview">
+                <p style="color: #ccc;">Venter på design...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="floating-cart">
+    <h3 style="margin-top:0; font-size: 1.1rem; border-bottom: 2px solid var(--forest-black); padding-bottom: 10px;">Din Handlekurv</h3>
+    <div id="cart-items-list"></div>
+    <div style="display:flex; justify-content:space-between; font-weight:bold; margin-top:15px; font-size: 1.2rem;">
+        <span>Totalt:</span>
+        <span id="cart-total-sum">0 kr</span>
+    </div>
+    <p style="font-size: 0.7rem; color: #666; text-transform: uppercase; margin-top: 15px; letter-spacing: 1px;">Hurtig kasse</p>
+    <div class="checkout-buttons">
+        <button class="btn-vipps" onclick="alert('Sender deg til Vipps...')">VIPPS</button>
+        <button class="btn-klarna" onclick="alert('Sender deg til Klarna...')">KLARNA</button>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    const colors = ['#1e332d', '#8b7355', '#556b2f', '#483c32', '#6b705c'];
+
+    function setMode(mode) {
+        const pkg = document.getElementById('pkgSelect');
+        pkg.value = (mode === 'gave') ? 'gave' : 'studio';
+        document.getElementById('konfigurator').scrollIntoView();
+        updateUI();
+    }
+
+    function updateUI() {
+        const input = document.getElementById('nameInput');
+        const pkg = document.getElementById('pkgSelect').value;
+        const preview = document.getElementById('preview');
+        let name = input.value.toUpperCase().replace(/[^A-ZÆØÅ]/g, '');
+        input.value = name;
+
+        preview.innerHTML = '';
+        if (pkg === 'gave') preview.classList.add('box-mode');
+        else preview.classList.remove('box-mode');
+
+        if (name.length > 0) {
+            for (let i = 0; i < name.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'letter';
+                div.innerText = name[i];
+                div.style.background = colors[i % colors.length];
+                preview.appendChild(div);
+            }
+            const total = (name.length * 95) + (pkg === 'gave' ? 89 : 0);
+            document.getElementById('totalPrice').innerText = total + ' kr';
+            document.getElementById('buyBtn').disabled = false;
+        } else {
+            preview.innerHTML = '<p style="color: #ccc;">Venter på design...</p>';
+            document.getElementById('totalPrice').innerText = '0 kr';
+            document.getElementById('buyBtn').disabled = true;
+        }
+    }
+
+    function addToCart() {
+        const name = document.getElementById('nameInput').value;
+        const pkgText = document.getElementById('pkgSelect').options[document.getElementById('pkgSelect').selectedIndex].text;
+        const price = parseInt(document.getElementById('totalPrice').innerText);
+
+        cart.push({ name, pkgText, price });
+        renderCart();
+
+        // Vis handlekurven
+        document.getElementById('floating-cart').style.display = 'block';
+
+        // Reset input for neste vare
+        document.getElementById('nameInput').value = '';
+        updateUI();
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cart-items-list');
+        const totalSum = document.getElementById('cart-total-sum');
+        list.innerHTML = '';
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            total += item.price;
+            list.innerHTML += `
+                <div class="cart-item">
+                    <span><strong>${item.name}</strong> (${item.pkgText.split(' ')[0]})</span>
+                    <span>${item.price} kr</span>
+                </div>
+            `;
+        });
+
+        totalSum.innerText = total + ' kr';
+    }
+</script>
+
+</body>
+</html>
+'''
