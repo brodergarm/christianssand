@@ -21,7 +21,7 @@
             font-family: 'Georgia', serif;
             background: linear-gradient(rgba(244, 241, 237, 0.92), rgba(244, 241, 237, 0.85)),
                         url('static/christianssand_bg_new.jpg');
-            background-size: cover; background-attachment: fixed;
+            background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--forest-black); margin: 0; padding: 0; min-height: 100vh;
         }
 
@@ -40,6 +40,38 @@
         .header-subtitle { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clay-warm); margin-top: 0.2rem; }
         .main-logo { height: 70px; width: auto; }
 
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+        /* GRID */
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 4rem; }
+        .category-card { background: white; cursor: pointer; transition: 0.3s; border: 1px solid transparent; text-align: center; overflow: hidden; }
+        .category-card:hover { border-color: var(--clay-warm); }
+        .category-card img { width: 100%; height: 180px; object-fit: cover; }
+        .category-info { padding: 0.8rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; font-weight: bold; }
+
+        /* CONFIG */
+        .config-container { background: white; padding: 3rem 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-top: 4px solid var(--emerald-deep); }
+        .config-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; }
+        input, select { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; font-size: 1.1rem; font-family: 'Georgia', serif; background: transparent; }
+        label { display: block; margin-top: 1.5rem; font-size: 0.7rem; text-transform: uppercase; color: var(--clay-warm); font-weight: bold; }
+        .preview-box { background: #fafaf9; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; min-height: 200px; border: 1px solid #f0efed; transition: 0.3s; padding: 1rem; }
+        .preview-box.box-mode { border: 8px solid #d4c4b5; background: white; }
+        .letter { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); }
+        .buy-btn { background: var(--emerald-deep); color: white; border: none; padding: 1.2rem; width: 100%; text-transform: uppercase; cursor: pointer; margin-top: 1.5rem; letter-spacing: 0.2em; font-weight: bold; }
+
+        /* NY INFO SEKSJON */
+        .info-section { background: white; padding: 4rem 2rem; margin-top: 4rem; text-align: center; border-top: 1px solid var(--border-color); }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; max-width: 1100px; margin: 0 auto; }
+        .info-item h3 { color: var(--clay-warm); text-transform: uppercase; letter-spacing: 0.1em; font-size: 1rem; }
+        .info-item p { font-size: 0.9rem; line-height: 1.6; color: #555; }
+
+        /* FOOTER */
+        footer { background: var(--forest-black); color: white; padding: 4rem 2rem; margin-top: 0; }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; }
+        .footer-content h4 { text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.8rem; margin-bottom: 1.5rem; color: var(--clay-warm); }
+        .footer-content p, .footer-content a { color: #aaa; text-decoration: none; font-size: 0.85rem; line-height: 1.8; }
+        .footer-bottom { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; color: #666; }
+
         /* FLYTENDE HANDLEKURV */
         #floating-cart {
             position: fixed; bottom: 20px; right: 20px;
@@ -49,56 +81,17 @@
             padding: 15px; z-index: 1000;
             display: none; border-radius: 8px;
         }
-
-        .cart-item { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .remove-item { cursor: pointer; color: #cc0000; font-weight: bold; margin-left: 10px; font-size: 1.1rem; }
         .checkout-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-        
         .btn-vipps { background: var(--vipps); color: white; border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 0.75rem; }
         .btn-klarna { background: var(--klarna); color: black; border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 5px; font-size: 0.75rem; }
 
-        /* GRID & CONFIG */
-        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
-        
-        /* 2x2 Grid-oppsett */
-        .category-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 1rem; 
-            margin-bottom: 4rem; 
-        }
-
-        .category-card { background: white; cursor: pointer; transition: 0.3s; border: 1px solid transparent; text-align: center; overflow: hidden; }
-        .category-card:hover { border-color: var(--clay-warm); }
-        .category-card img { width: 100%; height: 180px; object-fit: cover; }
-        .category-info { padding: 0.8rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; font-weight: bold; }
-
-        .config-container { background: white; padding: 3rem 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-top: 4px solid var(--emerald-deep); }
-        .config-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; }
-        
-        input, select { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; font-size: 1.1rem; font-family: 'Georgia', serif; background: transparent; }
-        label { display: block; margin-top: 1.5rem; font-size: 0.7rem; text-transform: uppercase; color: var(--clay-warm); font-weight: bold; }
-
-        .preview-box { background: #fafaf9; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; min-height: 200px; border: 1px solid #f0efed; transition: 0.3s; padding: 1rem; }
-        .preview-box.box-mode { border: 8px solid #d4c4b5; background: white; }
-
-        .letter { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3rem; box-shadow: 4px 4px 8px rgba(0,0,0,0.1); }
-
-        .buy-btn { background: var(--emerald-deep); color: white; border: none; padding: 1.2rem; width: 100%; text-transform: uppercase; cursor: pointer; margin-top: 1.5rem; letter-spacing: 0.2em; font-weight: bold; }
-        .buy-btn:disabled { background: #eee; cursor: not-allowed; color: #aaa; }
-
-        /* MOBIL-TILPASNINGER */
         @media (max-width: 768px) {
             .top-bar { padding: 1rem; flex-direction: column; text-align: center; }
             .header-content { flex-direction: column; gap: 0.5rem; }
-            .header-title { font-size: 1.4rem; }
-            .main-logo { height: 60px; }
-            
-            .category-grid { gap: 0.8rem; }
-            .category-card img { height: 140px; }
-            
-            .config-layout { grid-template-columns: 1fr; gap: 2rem; }
-            #floating-cart { width: 95%; right: 2.5%; bottom: 10px; }
-            .price-display { font-size: 2rem !important; }
+            .config-layout { grid-template-columns: 1fr; }
+            #floating-cart { width: 95%; right: 2.5%; }
         }
     </style>
 </head>
@@ -152,6 +145,45 @@
         </div>
     </div>
 </div>
+
+<section class="info-section">
+    <div class="info-grid">
+        <div class="info-item">
+            <h3>Håndlaget i Norge</h3>
+            <p>Hver eneste fargestift er håndstøpt i vårt lille studio i Christianssand. Vi bruker tradisjonelle metoder for å sikre den høyeste kvaliteten.</p>
+        </div>
+        <div class="info-item">
+            <h3>Trygge ingredienser</h3>
+            <p>Vi bruker kun naturlig voks og pigmenter som er trygge for barn og miljøet. Ingen skadelige kjemikalier eller plast.</p>
+        </div>
+        <div class="info-item">
+            <h3>Den perfekte gaven</h3>
+            <p>Med personlig innpakning og gravering er våre sett en favoritt til barnedåp, bursdager og spesielle anledninger.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div>
+            <h4>Christianssand</h4>
+            <p>Håndlagde fargestifter laget med lidenskap for farger og kvalitet.</p>
+        </div>
+        <div>
+            <h4>Kontakt</h4>
+            <p>Adresse: Eksempelveien 12<br>4611 Kristiansand, Norge</p>
+            <p>E-post: post@christianssand.no</p>
+        </div>
+        <div>
+            <h4>Følg oss</h4>
+            <a href="#">Instagram</a><br>
+            <a href="#">Facebook</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2024 Christianssand. Alle rettigheter reservert.
+    </div>
+</footer>
 
 <div id="floating-cart">
     <h3 style="margin-top:0; font-size: 1rem; border-bottom: 2px solid var(--forest-black); padding-bottom: 8px;">Handlekurv</h3>
@@ -207,15 +239,25 @@
     }
 
     function addToCart() {
-        const name = document.getElementById('nameInput').value;
-        const pkgText = document.getElementById('pkgSelect').options[document.getElementById('pkgSelect').selectedIndex].text;
+        const nameInput = document.getElementById('nameInput');
+        const pkgSelect = document.getElementById('pkgSelect');
+        const name = nameInput.value;
+        const pkgType = pkgSelect.value;
         const price = parseInt(document.getElementById('totalPrice').innerText);
 
-        cart.push({ name, pkgText, price });
+        cart.push({ id: Date.now(), name, pkgType, price });
         renderCart();
         document.getElementById('floating-cart').style.display = 'block';
-        document.getElementById('nameInput').value = '';
+        nameInput.value = '';
         updateUI();
+    }
+
+    function removeItem(id) {
+        cart = cart.filter(item => item.id !== id);
+        if (cart.length === 0) {
+            document.getElementById('floating-cart').style.display = 'none';
+        }
+        renderCart();
     }
 
     function renderCart() {
@@ -229,7 +271,10 @@
             list.innerHTML += `
                 <div class="cart-item">
                     <span><strong>${item.name}</strong></span>
-                    <span>${item.price} kr</span>
+                    <div style="display:flex; align-items:center;">
+                        <span>${item.price} kr</span>
+                        <span class="remove-item" onclick="removeItem(${item.id})">&times;</span>
+                    </div>
                 </div>
             `;
         });
@@ -239,5 +284,3 @@
 
 </body>
 </html>
-
-
