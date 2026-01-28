@@ -42,7 +42,7 @@
 
         .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-        /* GRID MED BESKRIVELSER */
+        /* GRID */
         .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
         .category-card { background: white; cursor: pointer; transition: 0.3s; border: 1px solid transparent; text-align: center; overflow: hidden; padding-bottom: 10px; }
         .category-card:hover { border-color: var(--clay-warm); transform: translateY(-5px); }
@@ -54,11 +54,41 @@
         /* KONFIGURATOR */
         .config-container { background: white; padding: 3rem 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-top: 4px solid var(--emerald-deep); scroll-margin-top: 100px; }
         .config-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; }
+        
         input, select { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; font-size: 1.1rem; font-family: 'Georgia', serif; background: transparent; }
         label { display: block; margin-top: 1.5rem; font-size: 0.7rem; text-transform: uppercase; color: var(--clay-warm); font-weight: bold; }
-        .preview-box { background: #fafaf9; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; min-height: 200px; border: 1px solid #f0efed; transition: 0.3s; padding: 1.5rem; }
-        .preview-box.box-mode { border: 10px solid #d4c4b5; background: white; }
+
+        /* PREVIEW BOKS MED BILDE */
+        .preview-box { 
+            background: #fafaf9; 
+            display: flex; 
+            flex-direction: column; /* Stable bilde over tekst */
+            align-items: center; 
+            justify-content: center; 
+            min-height: 300px; 
+            border: 1px solid #f0efed; 
+            transition: 0.3s; 
+            padding: 1.5rem; 
+        }
+        
+        /* Bilde inni preview-boksen */
+        #preview-img {
+            height: 120px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .letters-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .letter { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; font-weight: bold; box-shadow: 4px 4px 10px rgba(0,0,0,0.1); }
+        
         .buy-btn { background: var(--emerald-deep); color: white; border: none; padding: 1.5rem; width: 100%; text-transform: uppercase; cursor: pointer; margin-top: 2rem; letter-spacing: 0.2em; font-weight: bold; transition: 0.3s; }
         .buy-btn:hover { background: var(--forest-black); }
         .buy-btn:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
@@ -159,8 +189,12 @@
                 <div style="font-size: 2.5rem; margin: 1.5rem 0; font-weight: bold;" id="totalPrice">0 kr</div>
                 <button id="buyBtn" class="buy-btn" onclick="addToCart()" disabled>Legg i handlekurv</button>
             </div>
+            
             <div class="preview-box" id="preview">
-                <p style="color: #ccc;">Venter på dine valg...</p>
+                <img id="preview-img" src="static/ror.png" alt="Valgt produkt">
+                <div id="preview-letters" class="letters-container">
+                    <p style="color: #ccc; font-style:italic;">Skriv navn for å se...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -248,17 +282,22 @@
     function updateUI() {
         const input = document.getElementById('nameInput');
         const pkg = document.getElementById('pkgSelect').value;
-        const preview = document.getElementById('preview');
+        const previewImg = document.getElementById('preview-img');
+        const lettersContainer = document.getElementById('preview-letters');
         
         let name = input.value.toUpperCase().replace(/[^A-ZÆØÅ ]/g, '');
         input.value = name;
-        preview.innerHTML = '';
+        lettersContainer.innerHTML = '';
 
-        if (pkg === 'gave') preview.classList.add('box-mode');
-        else preview.classList.remove('box-mode');
+        // Oppdater bildet basert på valg
+        if (pkg === 'gave') {
+            previewImg.src = 'static/eske.png';
+        } else {
+            previewImg.src = 'static/ror.png';
+        }
 
         if (name.length === 0) {
-            preview.innerHTML = '<p style="color: #ccc;">Venter på valg...</p>';
+            lettersContainer.innerHTML = '<p style="color: #ccc;">Skriv navn for å se...</p>';
             document.getElementById('totalPrice').innerText = '0 kr';
             document.getElementById('buyBtn').disabled = true;
             return;
@@ -270,7 +309,7 @@
             div.className = 'letter';
             div.innerText = char;
             div.style.background = colors[i % colors.length];
-            preview.appendChild(div);
+            lettersContainer.appendChild(div);
         });
 
         const total = (chars.length * 95) + (pkg === 'gave' ? 89 : 0);
