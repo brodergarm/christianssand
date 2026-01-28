@@ -1,81 +1,310 @@
-// Bytt ut de eksisterende setMode og updateUI funksjonene dine med disse:
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christianssand | Håndlagde fargestifter</title>
+    <style>
+        :root { 
+            --forest-black: #141a17;
+            --emerald-deep: #1e332d;
+            --clay-warm: #a67c52;
+            --linen: #f4f1ed;
+            --vipps: #ff5b24;
+            --klarna: #ffb3c7;
+            --border-color: rgba(30, 51, 45, 0.2);
+        }
 
-let currentMode = 'studio'; // Global oversikt over hva som er valgt
+        * { box-sizing: border-box; scroll-behavior: smooth; }
 
-function setMode(mode) {
-    currentMode = mode;
-    const configTitle = document.getElementById('config-title');
-    const inputArea = document.querySelector('.input-group'); // Beholderen for input
-    const pkgSelect = document.getElementById('pkgSelect');
-    
-    // Bla ned til konfiguratoren
-    document.getElementById('konfigurator').scrollIntoView();
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(rgba(244, 241, 237, 0.92), rgba(244, 241, 237, 0.85)),
+                        url('static/christianssand_bg_new.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: var(--forest-black); margin: 0; padding: 0; min-height: 100vh;
+        }
 
-    // Logikk for de forskjellige valgene
-    if (mode === 'figurer') {
-        configTitle.innerText = "Velg dine figurer";
-        // Her kan vi senere bytte ut tekstfeltet med bilde-valg for figurer
-        document.getElementById('nameInput').placeholder = "F.eks: BIL, HJERTE, DYR...";
-        pkgSelect.value = 'studio'; 
-    } 
-    else if (mode === 'abc') {
-        configTitle.innerText = "Komplette Bokstavsett";
-        document.getElementById('nameInput').value = "ABC"; // Forhåndsutfyll
-        pkgSelect.value = 'gave';
-    }
-    else if (mode === 'gave') {
-        configTitle.innerText = "Gaveeske med navn";
-        pkgSelect.value = 'gave';
-        document.getElementById('nameInput').placeholder = "Skriv navn her...";
-    }
-    else {
-        configTitle.innerText = "Studio-rør med navn";
-        pkgSelect.value = 'studio';
-        document.getElementById('nameInput').placeholder = "Skriv navn her...";
-    }
+        /* HEADER */
+        .top-bar {
+            padding: 1.5rem 4rem;
+            background: white;
+            display: flex; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
 
-    updateUI();
-}
+        .header-content { display: flex; align-items: center; gap: 1.5rem; }
+        .header-title { font-size: 1.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--emerald-deep); margin: 0; }
+        .header-subtitle { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clay-warm); margin-top: 0.2rem; }
+        .main-logo { height: 70px; width: auto; }
 
-function updateUI() {
-    const input = document.getElementById('nameInput');
-    const pkg = document.getElementById('pkgSelect').value;
-    const preview = document.getElementById('preview');
-    
-    // Grunnleggende vask av tekst
-    let name = input.value.toUpperCase().replace(/[^A-ZÆØÅ ]/g, '');
-    input.value = name;
-    preview.innerHTML = '';
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-    // Visuell eske-effekt
-    if (pkg === 'gave') preview.classList.add('box-mode');
-    else preview.classList.remove('box-mode');
+        /* GRID MED BESKRIVELSER */
+        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+        .category-card { background: white; cursor: pointer; transition: 0.3s; border: 1px solid transparent; text-align: center; overflow: hidden; padding-bottom: 10px; }
+        .category-card:hover { border-color: var(--clay-warm); transform: translateY(-5px); }
+        .category-card img { width: 100%; height: 200px; object-fit: cover; }
+        .category-info { padding: 1rem; }
+        .category-info h3 { text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.1em; margin: 0; }
+        .category-desc { font-size: 0.7rem; color: #777; font-style: italic; margin-top: 5px; line-height: 1.4; }
 
-    if (name.length === 0) {
-        preview.innerHTML = '<p style="color: #ccc;">Venter på dine valg...</p>';
-        document.getElementById('totalPrice').innerText = '0 kr';
-        document.getElementById('buyBtn').disabled = true;
-        return;
-    }
+        /* KONFIGURATOR */
+        .config-container { background: white; padding: 3rem 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-top: 4px solid var(--emerald-deep); scroll-margin-top: 100px; }
+        .config-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; }
+        input, select { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; font-size: 1.1rem; font-family: 'Georgia', serif; background: transparent; }
+        label { display: block; margin-top: 1.5rem; font-size: 0.7rem; text-transform: uppercase; color: var(--clay-warm); font-weight: bold; }
+        .preview-box { background: #fafaf9; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; min-height: 200px; border: 1px solid #f0efed; transition: 0.3s; padding: 1.5rem; }
+        .preview-box.box-mode { border: 10px solid #d4c4b5; background: white; }
+        .letter { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.4rem; font-weight: bold; box-shadow: 4px 4px 10px rgba(0,0,0,0.1); }
+        .buy-btn { background: var(--emerald-deep); color: white; border: none; padding: 1.5rem; width: 100%; text-transform: uppercase; cursor: pointer; margin-top: 2rem; letter-spacing: 0.2em; font-weight: bold; transition: 0.3s; }
+        .buy-btn:hover { background: var(--forest-black); }
+        .buy-btn:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
 
-    // Lag bokstavene/figurene i preview
-    const items = name.split('');
-    items.forEach((char, i) => {
-        if(char === ' ') return; // Hopp over mellomrom
-        const div = document.createElement('div');
-        div.className = 'letter';
-        div.innerText = char;
+        /* INFO & FOOTER */
+        .info-section { background: white; padding: 4rem 2rem; text-align: center; border-top: 1px solid var(--border-color); }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; max-width: 1100px; margin: 0 auto; }
+        .info-item h3 { color: var(--clay-warm); text-transform: uppercase; font-size: 1rem; margin-bottom: 1rem; }
+        .info-item p { font-size: 0.9rem; line-height: 1.6; color: #555; }
+
+        footer { background: var(--forest-black); color: white; padding: 4rem 2rem; }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; }
+        .footer-content h4 { text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.8rem; margin-bottom: 1.5rem; color: var(--clay-warm); }
+        .footer-content p, .footer-content a { color: #aaa; text-decoration: none; font-size: 0.85rem; line-height: 1.8; }
+        .footer-bottom { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.7rem; color: #666; }
+
+        /* HANDLEKURV */
+        #floating-cart {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 340px; background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-top: 5px solid var(--emerald-deep);
+            padding: 20px; z-index: 1000;
+            display: none; border-radius: 8px;
+        }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .remove-item { cursor: pointer; color: #cc0000; font-weight: bold; margin-left: 10px; font-size: 1.2rem; }
+        .checkout-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-vipps { background: var(--vipps); color: white; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .btn-klarna { background: var(--klarna); color: black; border: none; padding: 12px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+
+        @media (max-width: 768px) {
+            .top-bar { padding: 1rem; flex-direction: column; text-align: center; }
+            .header-content { flex-direction: column; gap: 0.5rem; }
+            .category-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+            .config-layout { grid-template-columns: 1fr; }
+            #floating-cart { width: 95%; right: 2.5%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="header-content">
+        <img src="static/logo_olav.jpg" alt="Logo" class="main-logo">
+        <div class="header-text-group">
+            <div class="header-title">Christianssand</div>
+            <span class="header-subtitle">Håndlagde fargestifter</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="category-grid">
+        <div class="category-card" onclick="setMode('studio')">
+            <img src="static/ror.png" alt="Rør">
+            <div class="category-info">
+                <h3>Studio-Rør</h3>
+                <p class="category-desc">Klassisk innpakning som beskytter stiftene perfekt.</p>
+            </div>
+        </div>
+        <div class="category-card" onclick="setMode('gave')">
+            <img src="static/eske.png" alt="Eske">
+            <div class="category-info">
+                <h3>Gaveeske</h3>
+                <p class="category-desc">Eksklusiv eske med silkepapir. Ideell til dåp og fest.</p>
+            </div>
+        </div>
+        <div class="category-card" onclick="setMode('abc')">
+            <img src="static/abc.png" alt="Sett">
+            <div class="category-info">
+                <h3>Bokstavsett</h3>
+                <p class="category-desc">Komplette sett med alfabetet. Perfekt for læring.</p>
+            </div>
+        </div>
+        <div class="category-card" onclick="setMode('figurer')">
+            <img src="static/figurer.png" alt="Figurer">
+            <div class="category-info">
+                <h3>Figurer</h3>
+                <p class="category-desc">Håndstøpte dyr og hjerter. Morsomme å tegne med.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="konfigurator" class="config-container">
+        <div class="config-layout">
+            <div>
+                <h2 id="config-title" style="margin-top:0;">Konfigurator</h2>
+                <label id="input-label">Navn eller tekst</label>
+                <input type="text" id="nameInput" placeholder="SKRIV HER..." oninput="updateUI()" maxlength="12">
+                
+                <label>Valgt innpakning</label>
+                <select id="pkgSelect" onchange="updateUI()">
+                    <option value="studio">Studio-rør (95,- pr bokstav)</option>
+                    <option value="gave">Eksklusiv Gaveeske (+89,-)</option>
+                </select>
+
+                <div style="font-size: 2.5rem; margin: 1.5rem 0; font-weight: bold;" id="totalPrice">0 kr</div>
+                <button id="buyBtn" class="buy-btn" onclick="addToCart()" disabled>Legg i handlekurv</button>
+            </div>
+            <div class="preview-box" id="preview">
+                <p style="color: #ccc;">Venter på dine valg...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="info-section">
+    <div class="info-grid">
+        <div class="info-item">
+            <h3>Håndlaget i Norge</h3>
+            <p>Hver fargestift er støpt for hånd i vårt studio i Christianssand med fokus på detaljer.</p>
+        </div>
+        <div class="info-item">
+            <h3>Miljøvennlig</h3>
+            <p>Vi bruker naturlig voks og emballasje som kan resirkuleres. Trygt for barna, bra for jorda.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div>
+            <h4>Christianssand</h4>
+            <p>Unike fargestifter for små og store hender.</p>
+        </div>
+        <div>
+            <h4>Kontakt</h4>
+            <p>Kristiansand, Norge<br>post@christianssand.no</p>
+        </div>
+        <div>
+            <h4>Følg oss</h4>
+            <a href="#">Instagram</a><br><a href="#">Facebook</a>
+        </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Christianssand.</div>
+</footer>
+
+<div id="floating-cart">
+    <h3 style="margin:0 0 15px 0; font-size: 1.1rem; border-bottom: 2px solid var(--forest-black); padding-bottom: 8px;">Handlekurv</h3>
+    <div id="cart-items-list"></div>
+    <div style="display:flex; justify-content:space-between; font-weight:bold; margin-top:15px; font-size: 1.2rem;">
+        <span>Totalt:</span>
+        <span id="cart-total-sum">0 kr</span>
+    </div>
+    <div class="checkout-buttons">
+        <button class="btn-vipps" onclick="alert('Sender til Vipps...')">VIPPS</button>
+        <button class="btn-klarna" onclick="alert('Sender til Klarna...')">KLARNA</button>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    const colors = ['#1e332d', '#8b7355', '#556b2f', '#483c32', '#6b705c'];
+    let currentMode = 'studio';
+
+    function setMode(mode) {
+        currentMode = mode;
+        const title = document.getElementById('config-title');
+        const input = document.getElementById('nameInput');
+        const pkg = document.getElementById('pkgSelect');
         
-        // Hvis vi er i figur-modus, kan vi senere bytte ut 'char' med et bilde/ikon
-        div.style.background = colors[i % colors.length];
-        preview.appendChild(div);
-    });
+        document.getElementById('konfigurator').scrollIntoView();
 
-    // Beregn pris (Eksempel: 95 pr del, +89 for eske)
-    let unitPrice = 95;
-    if (currentMode === 'abc') unitPrice = 85; // Rabatt på fulle sett?
-    
-    const total = (name.replace(/\s/g, '').length * unitPrice) + (pkg === 'gave' ? 89 : 0);
-    document.getElementById('totalPrice').innerText = total.toLocaleString() + ' kr';
-    document.getElementById('buyBtn').disabled = name.length < 1;
-}
+        if (mode === 'abc') {
+            title.innerText = "Komplett Bokstavsett";
+            input.value = "ABC";
+            pkg.value = "gave";
+        } else if (mode === 'figurer') {
+            title.innerText = "Velg Figurer";
+            input.placeholder = "SKRIV FIGUR-NAVN...";
+        } else if (mode === 'gave') {
+            title.innerText = "Navn i Gaveeske";
+            pkg.value = "gave";
+        } else {
+            title.innerText = "Navn i Studio-rør";
+            pkg.value = "studio";
+        }
+        updateUI();
+    }
+
+    function updateUI() {
+        const input = document.getElementById('nameInput');
+        const pkg = document.getElementById('pkgSelect').value;
+        const preview = document.getElementById('preview');
+        
+        let name = input.value.toUpperCase().replace(/[^A-ZÆØÅ ]/g, '');
+        input.value = name;
+        preview.innerHTML = '';
+
+        if (pkg === 'gave') preview.classList.add('box-mode');
+        else preview.classList.remove('box-mode');
+
+        if (name.length === 0) {
+            preview.innerHTML = '<p style="color: #ccc;">Venter på valg...</p>';
+            document.getElementById('totalPrice').innerText = '0 kr';
+            document.getElementById('buyBtn').disabled = true;
+            return;
+        }
+
+        const chars = name.split('').filter(c => c !== ' ');
+        chars.forEach((char, i) => {
+            const div = document.createElement('div');
+            div.className = 'letter';
+            div.innerText = char;
+            div.style.background = colors[i % colors.length];
+            preview.appendChild(div);
+        });
+
+        const total = (chars.length * 95) + (pkg === 'gave' ? 89 : 0);
+        document.getElementById('totalPrice').innerText = total + ' kr';
+        document.getElementById('buyBtn').disabled = chars.length < 1;
+    }
+
+    function addToCart() {
+        const name = document.getElementById('nameInput').value;
+        const price = parseInt(document.getElementById('totalPrice').innerText);
+        cart.push({ id: Date.now(), name, price });
+        renderCart();
+        document.getElementById('floating-cart').style.display = 'block';
+        document.getElementById('nameInput').value = '';
+        updateUI();
+    }
+
+    function removeItem(id) {
+        cart = cart.filter(i => i.id !== id);
+        if (cart.length === 0) document.getElementById('floating-cart').style.display = 'none';
+        renderCart();
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cart-items-list');
+        const totalSum = document.getElementById('cart-total-sum');
+        list.innerHTML = '';
+        let total = 0;
+        cart.forEach((item) => {
+            total += item.price;
+            list.innerHTML += `
+                <div class="cart-item">
+                    <span><strong>${item.name}</strong></span>
+                    <div><span>${item.price} kr</span><span class="remove-item" onclick="removeItem(${item.id})">&times;</span></div>
+                </div>`;
+        });
+        totalSum.innerText = total + ' kr';
+    }
+</script>
+
+</body>
+</html>
